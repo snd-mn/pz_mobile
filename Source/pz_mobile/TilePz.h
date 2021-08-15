@@ -5,14 +5,13 @@
 #include "CoreMinimal.h"
 #include "NodePz.h"
 #include "TilePz.generated.h"
-/**
- * 
- */
-USTRUCT(BlueprintType, Category="PZ")
-struct PZ_MOBILE_API FTilePz
-{
-	GENERATED_BODY()
 
+UCLASS(BlueprintType, Category="PZ")
+class PZ_MOBILE_API UTilePz : public UObject
+{
+	public:
+	GENERATED_BODY()
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int64 id;
 
@@ -23,5 +22,5 @@ struct PZ_MOBILE_API FTilePz
 	int64 y;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<FNodePz> nodes;
+	TArray<UNodePz*> nodes = TArray<UNodePz*>();
 };

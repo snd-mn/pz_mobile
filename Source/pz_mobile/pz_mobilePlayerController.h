@@ -6,6 +6,7 @@
 
 #include "HttpComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "NodeRegistry.h"
 #include "pz_mobilePlayerController.generated.h"
 
 UCLASS()
@@ -18,6 +19,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UHttpComponent* HttpComponent;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UNodeRegistry* NodeRegistry;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */

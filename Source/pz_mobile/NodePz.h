@@ -5,12 +5,10 @@
 #include "CoreMinimal.h"
 #include "NodePz.generated.h"
 
-/**
- * 
- */
-USTRUCT(BlueprintType, Category="PZ")
-struct PZ_MOBILE_API FNodePz
+UCLASS(BlueprintType, Category="PZ")
+class PZ_MOBILE_API UNodePz : public UObject
 {
+	public:
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

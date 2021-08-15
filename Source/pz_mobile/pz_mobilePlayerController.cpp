@@ -12,6 +12,7 @@ Apz_mobilePlayerController::Apz_mobilePlayerController()
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 	HttpComponent = CreateDefaultSubobject<UHttpComponent>("HttpComponent");
+	NodeRegistry = CreateDefaultSubobject<UNodeRegistry>("NodeRegistry");
 }
 
 void Apz_mobilePlayerController::PlayerTick(float DeltaTime)
