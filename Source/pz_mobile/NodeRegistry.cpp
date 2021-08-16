@@ -3,6 +3,8 @@
 
 #include "NodeRegistry.h"
 
+#include "Kismet/KismetStringLibrary.h"
+
 
 // Sets default values
 //UNodeRegistry::UNodeRegistry()
@@ -38,10 +40,11 @@ void UNodeRegistry::UpdateTiles_Implementation(UPARAM(ref) TArray<UTilePz*>& til
 			TArray<int64> updatedNodeIds = TArray<int64>();
 			for (int j = 0; j < oldNodes.Num(); j++)
 			{
+				//TODO throws exceptions sometimes
 				UNodePz* oldNode = oldNodes[j];
 
 				bool found = false;
-				for (int k = 0; k < oldNodes.Num(); k++)
+				for (int k = 0; k < newNodes.Num(); k++)
 				{
 					UNodePz* newNode = newNodes[k];
 					if (oldNode->id == newNode->id)
@@ -49,15 +52,17 @@ void UNodeRegistry::UpdateTiles_Implementation(UPARAM(ref) TArray<UTilePz*>& til
 						//update node
 						updatedNodeIds.Add(oldNode->id);
 						oldNode->lat = newNode->lat;
-						oldNode->lon = newNode->lon;
+						oldNode->lat = newNode->lat;
+						oldNode->nextAvailability = newNode->nextAvailability;
+						oldNode->nodeType = newNode->nodeType;
 						found = true;
 						break;
 					}
-					if (found)
-					{
-						//TODO concurrent exeption?
-						oldNodes.Remove(oldNode);
-					}
+				}
+				if (!found)
+				{
+					//TODO concurrent exeption?
+					oldNodes.Remove(oldNode);
 				}
 			}
 			if (updatedNodeIds.Num() != newNodes.Num())
@@ -101,7 +106,22 @@ void UNodeRegistry::UpdateTiles_Implementation(UPARAM(ref) TArray<UTilePz*>& til
 
 TArray<UNodePz*> UNodeRegistry::GetNodesInRange_Implementation(float lat, float lon, float radius)
 {
-	return TArray<UNodePz*>();
+	TArray<UNodePz*> ret = TArray<UNodePz*>();
+	for (const TPair<int64, UNodePz*>& pair : Nodes)
+	{
+		float diff_lat = abs(lat - pair.Value->lat);
+		float diff_lon = abs(lon - pair.Value->lon);
+		float mangitude = FMath::Sqrt(diff_lat * diff_lat+diff_lon * diff_lon);	
+
+		UE_LOG(LogTemp,Warning, TEXT("magnitude %f, radius %f, pair.Value->lat %f, pair.Value->lon %f, lat %f, lon %f" ), mangitude, radius, pair.Value->lat, pair.Value->lon, lat, lon)
+		
+		if(mangitude <= radius)
+		{
+			ret.Add(pair.Value);	 
+		}
+	}
+	
+	return ret;
 }
 
 UNodePz* UNodeRegistry::GetNodeForId_Implementation(int64 id)
