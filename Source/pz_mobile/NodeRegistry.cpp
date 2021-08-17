@@ -126,17 +126,36 @@ TArray<UNodePz*> UNodeRegistry::GetNodesInRange_Implementation(float lat, float 
 
 UNodePz* UNodeRegistry::GetNodeForId_Implementation(int64 id)
 {
-	return nullptr;
+	UNodePz** ret = Nodes.Find(id);
+	if(!ret)
+	{
+		return nullptr;
+	}
+	return *ret;
 }
 
 UTilePz* UNodeRegistry::GetTileForXY_Implementation(int64 x, int64 y)
 {
-	return nullptr;
+	UTilePz* ret = nullptr;
+	for (const TPair<int64, UTilePz*>& pair : Tiles)
+	{
+		if(pair.Value->x == x && pair.Value->y == y)
+		{
+			ret = pair.Value;
+			break;
+		}
+	}
+	return ret;
 }
 
 UTilePz* UNodeRegistry::GetTileForId_Implementation(int64 id)
 {
-	return nullptr;
+	UTilePz** ret = Tiles.Find(id);
+	if(!ret)
+	{
+		return nullptr;
+	}
+	return *ret;
 }
 
 void UNodeRegistry::TickComponent(float DeltaTime, ELevelTick TickType,
