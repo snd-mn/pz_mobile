@@ -8,7 +8,14 @@ public class pz_mobile : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
+		PrivateDependencyModuleNames.AddRange(new string[] { "VaRest" });
+
+		PrivateIncludePathModuleNames.AddRange(new string[] { "VaRest" });
+
 		PublicDependencyModuleNames.AddRange(new string[]
-			{"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "NavigationSystem", "AIModule", "Http", "Json", "JsonUtilities"});
+		{
+			"Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "NavigationSystem", "AIModule", "Http",
+			"Json", "JsonUtilities", "VaRest"
+		});
 	}
 }

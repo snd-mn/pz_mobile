@@ -40,7 +40,7 @@ void UNodeRegistry::UpdateTiles_Implementation(UPARAM(ref) TArray<UTilePz*>& til
 			TArray<int64> updatedNodeIds = TArray<int64>();
 			for (int j = 0; j < oldNodes.Num(); j++)
 			{
-				//TODO throws exceptions sometimes
+				//TODO throws exceptions sometimes e.g. when db is reseted while game is running
 				UNodePz* oldNode = oldNodes[j];
 
 				bool found = false;

@@ -7,6 +7,8 @@
 #include "HttpComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "NodeRegistry.h"
+#include "VaRestExtendedSubsystem.h"
+#include "VaRestSubsystem.h"
 #include "pz_mobilePlayerController.generated.h"
 
 UCLASS()
@@ -22,6 +24,21 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UNodeRegistry* NodeRegistry;
+
+	UPROPERTY(BlueprintReadOnly,VisibleAnywhere)
+	UVaRestExtendedSubsystem* VaRestSubsystem;
+	
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	void Interact(UNodePz* node);
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	void InteractHandleResponse(UVaRestRequestJSON* Request);
+
+	// UFUNCTION()
+	// void InteractHandleResponseCpp(UVaRestRequestJSON* Request);
+
+	UFUNCTION(BlueprintCallable,BlueprintNativeEvent)
+	bool InitVaRestSubsystem();
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
@@ -47,6 +64,10 @@ protected:
 	/** Input handlers for SetDestination action. */
 	void OnSetDestinationPressed();
 	void OnSetDestinationReleased();
+
+	virtual void BeginPlay() override;
 };
+
+
 
 

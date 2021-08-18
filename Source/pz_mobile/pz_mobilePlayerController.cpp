@@ -15,6 +15,55 @@ Apz_mobilePlayerController::Apz_mobilePlayerController()
 	NodeRegistry = CreateDefaultSubobject<UNodeRegistry>("NodeRegistry");
 }
 
+void Apz_mobilePlayerController::Interact_Implementation(UNodePz* Node)
+{
+	const FString interactUrl = "http://127.0.0.1:12224/interact";
+	UVaRestJsonObject* RestObject = NewObject<UVaRestJsonObject>();
+	const FString Payload = FString::Printf(TEXT("{\"targetSystem\":\"1\",\"node\":\"%lld\"}"), Node->id);
+	RestObject->DecodeJson(Payload);
+
+	FVaRestCallDelegate& Callback = *new FVaRestCallDelegate();
+	Callback.BindUFunction(this, FName("InteractHandleResponse"));
+	RestObject->DecodeJson(Payload);
+
+	TMap<FString,FString> headers = TMap<FString,FString>();
+	headers.Add(TEXT("Authorization"),TEXT("Basic dXNlckBsb2NhbC10cmluaXR5Lm9yZzpzdXBlcnNhZmVwYXNzd29yZA=="));
+	headers.Add(TEXT("Content-Type"),TEXT("application/json"));
+	
+	VaRestSubsystem->CallExtended(interactUrl, EVaRestRequestVerb::POST, EVaRestRequestContentType::json, RestObject, Callback, headers);
+}
+
+void Apz_mobilePlayerController::InteractHandleResponse_Implementation(UVaRestRequestJSON* Request)
+{
+	bool ret = true;
+	
+	UE_LOG(LogTemp, Warning, TEXT("InteractHandleResponse_Implementation: %i"), Request->GetResponseCode())
+	ret &= Request->GetResponseCode() == 200;
+	ret &= Request->GetResponseObject()->GetStringField("info").Equals("fine!");
+
+	if(ret)
+	{
+		if(IsValid(GetPawn()))
+		{
+			Apz_mobileCharacter* character = Cast<Apz_mobileCharacter>(GetPawn());
+			character->Jump();
+		}
+	}
+}
+
+bool Apz_mobilePlayerController::InitVaRestSubsystem_Implementation()
+{
+	if (GEngine != nullptr)
+	{
+		VaRestSubsystem = GEngine->GetEngineSubsystem<UVaRestExtendedSubsystem>();
+		if (VaRestSubsystem != nullptr)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void Apz_mobilePlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
@@ -111,4 +160,10 @@ void Apz_mobilePlayerController::OnSetDestinationReleased()
 {
 	// clear flag to indicate we should stop updating the destination
 	bMoveToMouseCursor = false;
+}
+
+void Apz_mobilePlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	InitVaRestSubsystem();
 }
